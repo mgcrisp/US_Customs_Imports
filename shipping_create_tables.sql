@@ -1,3 +1,4 @@
+--- creating my three tables for the PostgreSQL database
 DROP TABLE IF EXISTS tariff;
 CREATE TABLE tariff (
 	identifier BIGINT,
@@ -40,12 +41,13 @@ CREATE TABLE bill_of_header (
 	PRIMARY KEY (identifier)
 );								
 
+-- Indexing for faster queries
 CREATE INDEX tariff_idx_container_number ON tariff(container_number) 
 	WITH (deduplicate_items = off);
 CREATE INDEX containers_idx_container_number ON containers(container_number) 
 	WITH (deduplicate_items = off);
 
-
+-- copying the data 
 COPY tariff FROM 'C:\Users\Public\project_1\silver_layer\tariff__cleaned.csv' 
 	DELIMITER '|' CSV HEADER;							
 COPY containers FROM 'C:\Users\Public\project_1\silver_layer\containers_cleaned.csv' 
@@ -53,6 +55,7 @@ COPY containers FROM 'C:\Users\Public\project_1\silver_layer\containers_cleaned.
 COPY bill_of_header FROM 'C:\Users\Public\project_1\silver_layer\bill_header_cleaned.csv' 
 	DELIMITER '|' CSV HEADER;							
 
+-- dealing with user access 
 CREATE ROLE project_1_readonly;
 GRANT CONNECT ON DATABASE shipping TO project_1_readonly;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO project_1_readonly;
